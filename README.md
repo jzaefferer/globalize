@@ -100,7 +100,7 @@ information on its usage.
 | globalize/date.js | +3.2KB | [Date module](#date_module) provides date formatting and parsing |
 | globalize/message.js | +0.5KB | [Message module](#message_module) provides message translation |
 | globalize/number.js | +2.6KB | [Number module](#number_module) provides number formatting and parsing |
-| globalize/plural.js | +2.0KB | [Plural module](#plural_module) provides pluralization support |
+| globalize/plural.js | +1.9KB | [Plural module](#plural_module) provides pluralization support |
 <!--- By updating this table, also update its clone in #usage -->
 
 <a name="browser_support"></a>

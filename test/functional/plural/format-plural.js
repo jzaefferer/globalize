@@ -10,7 +10,7 @@ function extraSetup() {
 	Globalize.load( plurals );
 }
 
-QUnit.module( ".formatPlural( value, messageData [, formatValue ] )", {
+QUnit.module( "._formatPlural( value, messageData [, formatValue ] )", {
 	setup: function() {
 		Globalize.load( likelySubtags );
 		Globalize.locale( "en" );
@@ -20,42 +20,42 @@ QUnit.module( ".formatPlural( value, messageData [, formatValue ] )", {
 
 QUnit.test( "should validate parameters", function( assert ) {
 	util.assertParameterPresence( assert, "value", function() {
-		Globalize.formatPlural();
+		Globalize._formatPlural();
 	});
 
 	util.assertNumberParameter( assert, "value", function( invalidValue ) {
 		return function() {
-			Globalize.formatPlural( invalidValue, { foo: "bar" } );
+			Globalize._formatPlural( invalidValue, { foo: "bar" } );
 		};
 	});
 
 	util.assertParameterPresence( assert, "messageData", function() {
-		Globalize.formatPlural( 1 );
+		Globalize._formatPlural( 1 );
 	});
 
 	util.assertPlainObjectParameter( assert, "messageData", function( invalidValue ) {
 		return function() {
-			Globalize.formatPlural( 1, invalidValue );
+			Globalize._formatPlural( 1, invalidValue );
 		};
 	});
 
 	util.assertPluralFormatValueParameter( assert, "formatValue", function( invalidValue ) {
 		return function() {
-			Globalize.formatPlural( 1, { foo: "bar" }, invalidValue );
+			Globalize._formatPlural( 1, { foo: "bar" }, invalidValue );
 		};
 	});
 
 	extraSetup();
 
 	util.assertParameterMissingKey( assert, "messageData", "one", function() {
-		Globalize.formatPlural( 1, { foo: "bar" } );
+		Globalize._formatPlural( 1, { foo: "bar" } );
 	});
 
 });
 
 QUnit.test( "should validate CLDR content", function( assert ) {
 	util.assertCldrContent( assert, function() {
-		Globalize.formatPlural( 1, { foo: "bar" } );
+		Globalize._formatPlural( 1, { foo: "bar" } );
 	});
 });
 
@@ -70,11 +70,11 @@ QUnit.test( "should return the appropriate message based on plural form", functi
 
 	extraSetup();
 
-	assert.equal( Globalize.formatPlural( 0, message ), "0 kitties" );
-	assert.equal( Globalize.formatPlural( 0, message, "no" ), "no kitties" );
-	assert.equal( Globalize.formatPlural( 0, message, "" ), " kitties" );
-	assert.equal( Globalize.formatPlural( 5, message ), "5 kitties" );
-	assert.equal( Globalize( "ar" ).formatPlural( 0, message ), "nothing" );
+	assert.equal( Globalize._formatPlural( 0, message ), "0 kitties" );
+	assert.equal( Globalize._formatPlural( 0, message, "no" ), "no kitties" );
+	assert.equal( Globalize._formatPlural( 0, message, "" ), " kitties" );
+	assert.equal( Globalize._formatPlural( 5, message ), "5 kitties" );
+	assert.equal( Globalize( "ar" )._formatPlural( 0, message ), "nothing" );
 });
 
 

@@ -1,6 +1,7 @@
 define([
+	"cldr",
+	"make-plural",
 	"./core",
-	"./common/validate",
 	"./common/validate/cldr",
 	"./common/validate/default-locale",
 	"./common/validate/parameter-key-presence",
@@ -8,14 +9,14 @@ define([
 	"./common/validate/parameter-type",
 	"./common/validate/parameter-type/number",
 	"./common/validate/parameter-type/plain-object",
-	"./plural/form",
-	"./common/format-message"
-], function( Globalize, validate, validateCldr, validateDefaultLocale, validateParameterKeyPresence,
-	validateParameterPresence, validateParameterType, validateParameterTypeNumber,
-	validateParameterTypePlainObject, pluralForm, formatMessage ) {
+	"./common/format-message",
+	"cldr/supplemental"
+], function( Cldr, MakePlural, Globalize, validateCldr, validateDefaultLocale,
+	validateParameterKeyPresence, validateParameterPresence, validateParameterType,
+	validateParameterTypeNumber, validateParameterTypePlainObject, formatMessage ) {
 
 /**
- * .formatPlural( value, data, formatValue )
+ * ._formatPlural( value, data, formatValue )
  *
  * @value [Number]
  *
@@ -27,8 +28,8 @@ define([
  * Return the appropriate message based on value's plural group: zero | one |
  * two | few | many | other.
  */
-Globalize.formatPlural =
-Globalize.prototype.formatPlural = function( value, messageData, formatValue ) {
+Globalize._formatPlural =
+Globalize.prototype._formatPlural = function( value, messageData, formatValue ) {
 	var form;
 
 	// Note: validateParameterTypeNumber( value, "value" ) is deferred to this.plural().
@@ -64,24 +65,48 @@ Globalize.prototype.formatPlural = function( value, messageData, formatValue ) {
  */
 Globalize.plural =
 Globalize.prototype.plural = function( value ) {
-	var cldr, form;
-
 	validateParameterPresence( value, "value" );
 	validateParameterTypeNumber( value, "value" );
+	return this.pluralGenerator()( value );
+};
+
+/**
+ * .pluralGenerator()
+ *
+ * Return a plural function (of the form below).
+ *
+ * fn( value )
+ *
+ * @value [Number]
+ *
+ * Return the corresponding form (zero | one | two | few | many | other) of a value given the
+ * default/instance locale.
+ */
+Globalize.pluralGenerator =
+Globalize.prototype.pluralGenerator = function() {
+	var cldr, plural;
 
 	cldr = this.cldr;
 
 	validateDefaultLocale( cldr );
 
 	cldr.on( "get", validateCldr );
-	form = pluralForm( value, cldr );
+	cldr.supplemental( "plurals-type-cardinal/{language}" );
 	cldr.off( "get", validateCldr );
 
-	validate( "E_INVALID_CLDR", "{description}", typeof form === "string", {
-		description: "Missing rules to deduce plural form of `" + value + "`"
-	});
+	// Set CLDR data
+	MakePlural.rules = {
+		cardinal: cldr.supplemental( "plurals-type-cardinal" )
+	};
 
-	return form;
+	plural = MakePlural( cldr.attributes.language, { "no_tests": true } );
+
+	return function( value ) {
+		validateParameterPresence( value, "value" );
+		validateParameterTypeNumber( value, "value" );
+
+		return plural( value );
+	};
 };
 
 return Globalize;
