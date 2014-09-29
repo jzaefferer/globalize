@@ -26,7 +26,22 @@ QUnit.module( ".formatMessage( path )", {
 					hello: "Hello",
 					helloYou: "Hello, {name}"
 				},
-				tasks: [
+				like: [
+					"{count, plural, offset:1",
+						"   =0 {Be the first to like this}",
+						" zero {You liked this}",
+						"  one {You and {someone} liked this}",
+						"other {You and # others liked this}",
+					"}"
+				].join( " " ),
+				party: [
+					"{hostGender, select,",
+						"female {{host} invites {guest} to her party}",
+						"  male {{host} invites {guest} to his party}",
+						" other {{host} invites {guest} to their party}",
+					"}"
+				].join( " " ),
+				task: [
 					"You have {count, plural,",
 						"  one {one task}",
 						"other {# tasks}",
@@ -75,9 +90,22 @@ QUnit.test( "should support ICU message format", function( assert ) {
 		name: "Beethoven"
 	}), "Hello, Beethoven" );
 
-	assert.equal( Globalize( "en" ).formatMessage( "tasks", {
+	// Plural
+	assert.equal( Globalize( "en" ).formatMessage( "task", {
 		count: 123
 	}), "You have 123 tasks remaining" );
+
+	// Select
+	assert.equal( Globalize( "en" ).formatMessage( "party", {
+		guest: "Mozart",
+		host: "Beethoven",
+		hostGender: "male"
+	}), "Beethoven invites Mozart to his party" );
+
+	// Plural offset
+	assert.equal( Globalize( "en" ).formatMessage( "like", {
+		count: 3
+	}), "You and 2 others liked this" );
 });
 
 });

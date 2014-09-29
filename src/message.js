@@ -102,8 +102,6 @@ Globalize.prototype.messageFormatter = function( path ) {
 		.replace( /i18n\.(.)\(d/g, "fns.$1(fns,d" );
 
 	/* jshint evil: true */
-	/* globals console */
-	console.log( "=>", formatter );
 	formatter = new Function("fns", "d", formatter);
 
 	return function( variables ) {
