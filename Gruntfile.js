@@ -107,7 +107,8 @@ module.exports = function( grunt ) {
 				paths: {
 					cldr: "../external/cldrjs/dist/cldr",
 					CLDRPluralRuleParser: "../external/CLDRPluralRuleParser/src/" +
-						"CLDRPluralRuleParser"
+						"CLDRPluralRuleParser",
+					messageformat: "../external/messageformat/messageformat"
 				},
 				skipSemiColonInsertion: true,
 				skipModuleInsertion: true,
@@ -130,6 +131,22 @@ module.exports = function( grunt ) {
 							// Replace UMD wrapper into var assignment.
 							.replace( /\(function\(root, factory\)[\s\S]*?}\(this, function\(\) {/, "var CLDRPluralRuleParser = (function() {" )
 							.replace( /}\)\);\s+$/, "}());" );
+
+					// messageformat
+					} else if ( (/messageformat/).test( id ) ) {
+						return contents
+
+							// Replace its wrapper into var assignment.
+							.replace( /\(function \( root \) {/, [
+								"var MessageFormat;",
+								"/* jshint ignore:start */",
+								"MessageFormat = (function() {"
+							].join( "\n" ) )
+							.replace( /if \(typeof exports !== 'undefined'[\s\S]*/, [
+								"return MessageFormat;",
+								"}());",
+								"/* jshint ignore:end */"
+							].join( "\n" ) );
 					}
 
 					// 1, and 2: Remove define() wrap.

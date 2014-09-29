@@ -21,7 +21,7 @@ require([
 	"./functional/date/parse-date",
 
 	// message
-	"./functional/message/translate",
+	"./functional/message/format-message",
 
 	// number
 	"./functional/number/number-formatter",

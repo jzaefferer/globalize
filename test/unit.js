@@ -4,6 +4,7 @@ require.config({
 		"cldr-data": "../external/cldr-data",
 		CLDRPluralRuleParser: "../external/CLDRPluralRuleParser/src/CLDRPluralRuleParser",
 		json: "../external/requirejs-plugins/src/json",
+		messageformat: "../external/messageformat/messageformat",
 		src: "../src",
 		text: "../external/requirejs-text/text"
 	}
@@ -22,9 +23,6 @@ require([
 	"./unit/date/tokenizer",
 	"./unit/date/parse-properties",
 	"./unit/date/parse",
-
-	// message
-	"./unit/message/translate",
 
 	// number
 	"./unit/number/pattern-properties",
