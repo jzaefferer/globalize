@@ -13,7 +13,7 @@ define([
 	alwaysArray ) {
 
 function throwLoadPluralError() {
-	createError( "E_NEEDS_PLURAL_MOD", "Load Globalize plural module" );
+	throw createError( "E_NEEDS_PLURAL_MOD", "Load Globalize plural module" );
 }
 
 function pluralFn( cldr ) {
