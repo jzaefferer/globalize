@@ -2,6 +2,7 @@ define([
 	"globalize",
 	"json!fixtures/cldr/supplemental/likelySubtags.json",
 	"../../util",
+	"cldr/event",
 	"cldr/unresolved",
 	"globalize/message",
 	"globalize/plural"
