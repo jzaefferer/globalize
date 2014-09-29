@@ -19,8 +19,9 @@ function throwLoadPluralError() {
 function pluralFn( cldr ) {
 	// FIXME: depends on the yet-to-be-created plural generator:
 	// pluralFormatter() or pluralizer() or pluralFn().
+	var globalize = new Globalize( cldr );
 	return function( value ) {
-		return new Globalize( cldr ).plural( value );
+		return globalize.plural( value );
 	};
 }
 
