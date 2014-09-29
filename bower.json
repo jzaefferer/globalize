@@ -15,7 +15,7 @@
   "devDependencies": {
     "CLDRPluralRuleParser": "santhoshtr/CLDRPluralRuleParser#6b17882b834b1ab8bb3a593fd66529c9822dd6d7",
     "es5-shim": "3.4.0",
-    "messageformat": "0.2.1",
+    "messageformat": "SlexAxton/messageformat.js#302a46a38d511de3b499f9ce0d18289e9fbd92b3",
     "qunit": "1.12.0",
     "requirejs": "2.1.9",
     "requirejs-plugins": "1.0.2",

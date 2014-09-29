@@ -1,16 +1,18 @@
 define([
 	"globalize",
 	"json!fixtures/cldr/supplemental/likelySubtags.json",
+	"json!fixtures/cldr/supplemental/plurals.json",
 	"../../util",
 	"cldr/event",
 	"cldr/unresolved",
 	"globalize/message",
 	"globalize/plural"
-], function( Globalize, likelySubtags, util ) {
+], function( Globalize, likelySubtags, plurals, util ) {
 
 QUnit.module( ".formatMessage( path )", {
 	setup: function() {
 		Globalize.load( likelySubtags );
+		Globalize.load( plurals );
 		Globalize.loadMessages({
 			root: {
 				amen: "Amen"

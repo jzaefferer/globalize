@@ -2,53 +2,32 @@ define([
 	"cldr",
 	"messageformat",
 	"./core",
+	"./common/create-error",
 	"./common/validate/default-locale",
 	"./common/validate/parameter-presence",
 	"./common/validate/parameter-type",
 	"./common/validate/parameter-type/plain-object",
 	"./util/always-array"
-], function( Cldr, MessageFormat, Globalize, validateDefaultLocale, validateParameterPresence,
-	validateParameterType, validateParameterTypePlainObject, alwaysArray ) {
+], function( Cldr, createError, MessageFormat, Globalize, validateDefaultLocale,
+	validateParameterPresence, validateParameterType, validateParameterTypePlainObject,
+	alwaysArray ) {
 
-var MessageFormatRuntime;
-
-function MessageFormatInit( cldr ) {
-	var locale = cldr.locale,
-
-		// MessageFormat( locale, fn ) will throw error if fn is not passed. It doesn't matter what fn
-		// is passed, because it uses MessageFormatRuntime.lc.
-		messageFormat = new MessageFormat( locale, function() {} );
-
-	if ( Globalize.plural ) {
-		// FIXME: depends on the yet-to-be-created plural generator:
-		// pluralFormatter() or pluralizer() or pluralFn().
-		/*
-		MessageFormatRuntime.lc[ locale ] = function( value ) {
-			return new Globalize( cldr ).plural( value );
-		};
-		*/
-		MessageFormatRuntime.lc[ locale ] = function() {
-			return "other";
-		};
-	} else {
-		MessageFormatRuntime.lc[ locale ] = function() {
-			// FIXME use createError().
-			throw new Error( "Load globalize/plural" );
-		};
-	}
-	return messageFormat;
+function throwLoadPluralError() {
+	createError( "E_NEEDS_PLURAL_MOD", "Load Globalize plural module" );
 }
 
-/* jshint ignore:start */
-MessageFormatRuntime = {
-	lc: {},
-	c:function(d,k){if(!d)throw new Error("MessageFormat: Data required for '"+k+"'.")},
-	n:function(fns,d,k,o){if(isNaN(d[k]))throw new Error("MessageFormat: '"+k+"' isn't a number.");return d[k]-(o||0)},
-	v:function(fns,d,k){fns.c(d,k);return d[k]},
-	p:function(fns,d,k,o,l,p){fns.c(d,k);return d[k] in p?p[d[k]]:(k=fns.lc[l](d[k]-o),k in p?p[k]:p.other)},
-	s:function(fns,d,k,p){fns.c(d,k);return d[k] in p?p[d[k]]:p.other}
-};
-/* jshint ignore:end */
+function pluralFn( cldr ) {
+	// FIXME: depends on the yet-to-be-created plural generator:
+	// pluralFormatter() or pluralizer() or pluralFn().
+	return function( value ) {
+		return new Globalize( cldr ).plural( value );
+	};
+}
+
+function MessageFormatInit( cldr ) {
+	var locale = cldr.locale;
+	return new MessageFormat( locale, Globalize.plural ? pluralFn( cldr ) : throwLoadPluralError );
+}
 
 /**
  * .loadMessages( json )
@@ -93,21 +72,12 @@ Globalize.prototype.messageFormatter = function( path ) {
 	// TODO validate message presence and type.
 
 	formatter = MessageFormatInit( this.cldr );
-
-	formatter = formatter.precompile( formatter.parse( message ) )
-
-	// hack - pass runtime fns
-		.replace( /^function\(d\)\{/, "" )
-		.replace( /\}$/, "" )
-		.replace( /i18n\.(.)\(d/g, "fns.$1(fns,d" );
-
-	/* jshint evil: true */
-	formatter = new Function("fns", "d", formatter);
+	formatter = formatter.compile( message );
 
 	return function( variables ) {
 		// TODO validate variables
 
-		return formatter( MessageFormatRuntime, variables );
+		return formatter( variables );
 	};
 };
 

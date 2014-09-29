@@ -337,10 +337,10 @@ module.exports = function( grunt ) {
 		"jshint:source",
 		"jshint:test",
 		"jscs:grunt",
-		/* FIXME revert "jscs:source",*/
+		"jscs:source",
 
 		// TODO fix issues, enable
-		// "jscs:test",
+		//"jscs:test",
 		"test:unit",
 		"clean",
 		"requirejs",
