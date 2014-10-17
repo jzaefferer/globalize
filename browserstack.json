@@ -1,0 +1,10 @@
+{
+	"test_framework": "qunit",
+	"test_path": [
+		"test/unit.html",
+		"test/unit.html?es5shim"
+	],
+	"browsers": [
+		"chrome_latest"
+	]
+}
